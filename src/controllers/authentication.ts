@@ -45,14 +45,12 @@ export const register = async (req: any, res: any) => { // here we need req: exp
         const {email, username, password} = req.body;
         console.log('body', req.body);
         if(!email || !password || !username){
-            console.log('error 9');
             return res.sendStatus(400);
         }
         
         const exitingUser = await getUserByEmail(email);
 
         if(exitingUser){
-            console.log('error 1');
             return res.sendStatus(400)
         }
         const salt = random()
