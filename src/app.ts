@@ -1,36 +1,33 @@
-import 'reflect-metadata';
 import express from 'express';
-import { postgresDataSource, mongoDataSource } from './dataSource';
+import http from 'http'
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
+import cors from 'cors';
+import mongoose from 'mongoose'
+import router from './router';
+import dotenv from 'dotenv';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Initialize PostgreSQL connection
-postgresDataSource
-  .initialize()
-  .then(() => {
-    console.log('PostgreSQL connected');
-  })
-  .catch((err: string) => {
-    console.error('Error connecting to PostgreSQL', err);
-  });
+app.use(cors({
+    credentials: true,
+}));
 
-// Initialize MongoDB connection
-mongoDataSource
-  .initialize()
-  .then(() => {
-    console.log('MongoDB connected');
-  })
-  .catch((err: string) => {
-    console.error('Error connecting to MongoDB', err);
-  });
+app.use(compression());
+app.use(cookieParser());
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.send('Server is running');
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const server = http.createServer(app);
 
 
+server.listen(8000, () => {
+    console.log('Server running on http://localhost:8000/');
+})
+
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/mymongodb';
+mongoose.Promise = Promise;
+mongoose.connect(MONGO_URL);
+mongoose.connection.on('error', (error: Error) => console.log(error))
+
+app.use('/', router())
