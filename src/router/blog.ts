@@ -9,4 +9,5 @@ export default (router: express.Router) => {
     router.get('/blogs/:id', blogController.getBlogById);
     router.put('/blogs/:id', isAuthor,  blogController.updateBlog);
     router.delete('/blogs/:id', isAuthor, blogController.deleteBlog);
+    router.get('/blogs-pagination', blogController.getAllBlogsByQuery);
 }

@@ -51,3 +51,24 @@ export const deleteBlog = async (req: any, res: any) => {
     return res.sendStatus(500)
   }
 };
+
+export const getAllBlogsByQuery = async (req: any, res: any) => {
+  try {
+    const page = parseInt(req.query.page) || 1; 
+    const limit = parseInt(req.query.limit) || 10; 
+    const skip = (page - 1) * limit; 
+
+    const totalBlogs = await Blog.countDocuments();
+    const blogs = await Blog.find().skip(skip).limit(limit);
+
+    res.json({
+      total: totalBlogs,
+      page,
+      pages: Math.ceil(totalBlogs / limit), 
+      limit, 
+      blogs, 
+    });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
