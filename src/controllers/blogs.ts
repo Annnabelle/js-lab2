@@ -6,7 +6,7 @@ export const createBlog = async (req : any, res: any) => {
     const { title, content, author } = req.body;
     const blog = new Blog({ title, content, author });
     await blog.save();
-    res.status(201).json(blog);
+    res.status(201).json(blog).send('You have added blog!')
   } catch (error) {
     return res.sendStatus(400)
   }
@@ -36,7 +36,7 @@ export const updateBlog = async (req: any, res: any) => {
     const { title, content, author } = req.body;
     const blog = await Blog.findByIdAndUpdate(req.params.id, { title, content, author }, { new: true, runValidators: true });
     if (!blog) return res.status(404).json({ message: 'Blog not found' });
-    res.json(blog);
+    res.json(blog).send('Blog updated!');
   } catch (error) {
     return res.sendStatus(400)
   }
